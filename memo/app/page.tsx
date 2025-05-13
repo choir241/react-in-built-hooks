@@ -2,7 +2,7 @@
 import Post from "./components/Post";
 import { posts } from "./static/posts";
 import { useState } from "react";
-import AddNewPost from "./hooks/addPost";
+import AddNewPost from "./hooks/AddPost";
 
 export default function Home() {
   const [currentPosts, setCurrentPosts] = useState(posts);

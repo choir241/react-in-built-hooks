@@ -1,5 +1,5 @@
 "use client";
-import { memo, useState } from "react";
+import { memo, useState, FormEvent } from "react";
 
 export interface IPost {
   id: number;
@@ -9,7 +9,17 @@ export interface IPost {
   media: string;
 }
 
-function handleLike({ e, postId, posts, setCurrentPosts }) {
+function handleLike({
+  e,
+  postId,
+  posts,
+  setCurrentPosts,
+}: {
+  e: FormEvent<HTMLFormElement>;
+  postId: number;
+  posts: IPost[];
+  setCurrentPosts: (e: IPost[]) => void;
+}) {
   e.preventDefault();
 
   const updatedPosts = posts.map((post: IPost) => {
@@ -21,12 +31,20 @@ function handleLike({ e, postId, posts, setCurrentPosts }) {
     }
   });
 
-  console.log(updatedPosts);
-
   setCurrentPosts([...updatedPosts]);
 }
 
-function handleDelete({ e, postId, posts, setCurrentPosts }) {
+function handleDelete({
+  e,
+  postId,
+  posts,
+  setCurrentPosts,
+}: {
+  e: FormEvent<HTMLFormElement>;
+  postId: number;
+  posts: IPost[];
+  setCurrentPosts: (e: IPost[]) => void;
+}) {
   e.preventDefault();
 
   const updatedPosts = posts.filter((post: IPost) => post.id !== postId);
@@ -45,21 +63,30 @@ function editPost({
   newAuthor,
   newContent,
   newMedia,
+}: {
+  e: FormEvent<HTMLFormElement>;
+  postId: number;
+  posts: IPost[];
+  setIsEditing: (e: boolean) => void;
+  content: string;
+  newContent: string;
+  author: string;
+  newAuthor: string;
+  media: string;
+  newMedia: string;
 }) {
   e.preventDefault();
 
   posts.map((post: IPost) => {
     if (post.id === postId) {
-      
-    const newPost = {
-    id: post.id,
-    author: post.author = newAuthor ? newAuthor : author,
-    content: post.content = newContent ? newContent : content,
-    media: post.media = newMedia ? newMedia : media
-    }
+      const newPost = {
+        id: post.id,
+        author: (post.author = newAuthor ? newAuthor : author),
+        content: (post.content = newContent ? newContent : content),
+        media: (post.media = newMedia ? newMedia : media),
+      };
 
-    return newPost
-     
+      return newPost;
     } else {
       return post;
     }
