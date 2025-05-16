@@ -1,22 +1,22 @@
 "use client";
 import Post from "./components/Post";
-import { posts } from "./static/posts";
-import { useState } from "react";
+import { initialPosts } from "./static/initialPosts";
+import { useReducer } from "react";
 import AddNewPost from "./hooks/AddPost";
+import { postReducer } from "./reducer/postReducer";
 
 export default function Home() {
-  const [currentPosts, setCurrentPosts] = useState(posts);
-  console.log(currentPosts);
+  const [posts, dispatch] = useReducer(postReducer, initialPosts);
+
   return (
     <>
-      <AddNewPost posts = {currentPosts} setCurrentPosts={setCurrentPosts}/>
-      {currentPosts.map((post) => {
+      <AddNewPost dispatch={dispatch} />
+      {posts.map((post) => {
         return (
           <Post
             post={post}
             key={post.id}
-            setCurrentPosts={setCurrentPosts}
-            currentPosts={currentPosts}
+            dispatch={dispatch}
           />
         );
       })}

@@ -1,69 +1,86 @@
 "use client";
 import type { IPost } from "../components/Post";
-import { useState, memo, FormEvent } from "react";
+import { useState, memo, useCallback, FormEvent } from "react";
+import Input from "../components/Input";
+import TextArea from "../components/TextArea";
+import Button from "../components/Buttons";
 
 const AddNewPost = memo(function AddPost({
-  posts,
-  setCurrentPosts,
+  dispatch,
 }: {
-  posts: IPost[];
-  setCurrentPosts: (e: IPost[]) => void;
+  dispatch: (e) => void;
 }) {
-  const [content, setContent] = useState("");
-  const [author, setAuthor] = useState("");
-  const [media, setMedia] = useState("");
-  const [id, setId] = useState(50);
-  const [isAdding, setIsAdding] = useState(false);
+  const addPost = useCallback(
+    ({
+      e,
+      post,
+      setIsAdding,
+    }: {
+      e: FormEvent<HTMLButtonElement>;
+      post: IPost;
+      setIsAdding: (e: boolean) => void;
+    }) => {
+      e.preventDefault();
 
-  function addPost(e: FormEvent<HTMLButtonElement>) {
-    e.preventDefault();
+      post.id++;
 
-    const newId = id + 1;
-    setCurrentPosts([
-      ...posts,
-      {
-        content,
-        author,
-        media,
+      dispatch({
+        type: "added",
+        content: post.content,
+        author: post.author,
+        media: post.media,
         likes: 0,
-        id: newId,
-      },
-    ]);
+        id: post.id,
+      });
 
-    setAuthor("");
-    setContent("");
-    setMedia("");
+      setIsAdding(false);
+    },
+    []
+  );
 
-    setId(newId);
-    setIsAdding(false);
-  }
+  const [post, setPost] = useState({
+    content: "",
+    author: "",
+    media: "",
+    likes: 0,
+    id: 50,
+  });
+  const [isAdding, setIsAdding] = useState(false);
 
   return (
     <>
       {isAdding ? (
         <form className="editForm">
-          <input
-            defaultValue={author}
-            onChange={(e) => setAuthor(e.target.value)}
+          <Input
+            label="Author"
+            name="author"
+            defaultValue={post.author}
+            onChange={(e) => setPost({ ...post, author: e.target.value })}
             type="text"
           />
-          <textarea
-            defaultValue={content}
-            className="textbox"
-            rows={10}
-            cols={50}
-            onChange={(e) => setContent(e.target.value)}
+          <TextArea
+            name="content"
+            label="Content"
+            defaultValue={post.content}
+            onChange={(e) => setPost({ ...post, content: e.target.value })}
           />
-          <input
-            defaultValue={media}
-            onChange={(e) => setMedia(e.target.value)}
-            className="mediaInput"
+          <Input
+            label="Media"
+            name="media"
+            defaultValue={post.media}
+            onChange={(e) => setPost({ ...post, media: e.target.value })}
             type="text"
-          />{" "}
-          <button onClick={(e) => addPost(e)}>Add</button>
+          />
+          <Button
+            label="Add"
+            onClick={(e) => {
+              e.preventDefault();
+              addPost({ e, post, setIsAdding });
+            }}
+          />
         </form>
       ) : (
-        <button onClick={() => setIsAdding(true)}>Add new post</button>
+        <Button label="Add new post" onClick={(e) => setIsAdding(true)} />
       )}
     </>
   );
