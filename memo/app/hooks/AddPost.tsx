@@ -9,7 +9,7 @@ const AddNewPost = memo(function AddPost({
   dispatch,
 }: {
   dispatch: (e) => void;
-}) {
+}) {  
   const addPost = useCallback(
     ({
       e,
